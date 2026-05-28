@@ -18,5 +18,9 @@ const GOOGLE_AUTH_DOMAINS = ['gcloud.ua.es', 'gmail.com'];
 // Dominios sin Google Workspace → contraseña en la app.
 const PASSWORD_DOMAINS = ['ua.es'];
 
+// Dominios auto-permitidos (no requieren estar en `allowlist`).
+// Cualquier email de estos dominios puede registrarse / autenticarse.
+const AUTO_ALLOWED_DOMAINS = ['gcloud.ua.es', 'ua.es', 'gmail.com'];
+
 // Duración de la sesión password (en ms).
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 días

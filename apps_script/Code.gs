@@ -105,9 +105,15 @@ function verifyPasswordSession(token) {
 }
 
 function isEmailAuthorized(email) {
+  const e = String(email || '').toLowerCase();
+  if (!e) return false;
+  if (ADMIN_EMAILS.includes(e)) return true;
+  const domain = e.split('@')[1];
+  if (AUTO_ALLOWED_DOMAINS.includes(domain)) return true;
+  // Fallback: allowlist explícita (para excepciones de otros dominios)
   const sheet = getOrCreateSheet('allowlist', ['email']);
-  const list = sheet.getDataRange().getValues().flat().map(e => String(e).toLowerCase());
-  return list.includes(String(email).toLowerCase()) || ADMIN_EMAILS.includes(email);
+  const list = sheet.getDataRange().getValues().flat().map(x => String(x).toLowerCase());
+  return list.includes(e);
 }
 
 function usersSheet() {
@@ -217,9 +223,17 @@ function register(body) {
 function getBookings(body) {
   const sheet = getOrCreateSheet('bookings', ['room','date','start','end','email','note']);
   const data  = sheet.getDataRange().getValues().slice(1);
+  // mapa email -> nombre, para mostrar nombre en vez de email a no-admins
+  const u = usersSheet().getDataRange().getValues().slice(1);
+  const nameByEmail = {};
+  u.forEach(r => { nameByEmail[String(r[0]).toLowerCase()] = r[1]; });
   const result = data
     .filter(r => !body.room || r[0] === body.room)
-    .map(r => ({ room: r[0], date: r[1], start: r[2], end: r[3], email: r[4], note: r[5] }));
+    .map(r => ({
+      room: r[0], date: r[1], start: r[2], end: r[3],
+      email: r[4], note: r[5],
+      userName: nameByEmail[String(r[4]).toLowerCase()] || r[4]
+    }));
   return { bookings: result };
 }
 
@@ -230,11 +244,12 @@ function addBooking(body, caller) {
   const email = caller.email;
   const { room, date, start, end, note } = body;
   if (!room || !date || !start || !end) return { error: 'Faltan campos' };
+  if (!note || !String(note).trim()) return { error: 'El motivo es obligatorio' };
   const sheet = getOrCreateSheet('bookings', ['room','date','start','end','email','note']);
   const data  = sheet.getDataRange().getValues().slice(1);
   const conflict = data.find(r => r[0] === room && r[1] === date && r[2] < end && r[3] > start);
   if (conflict) return { error: 'Solapa con otra reserva' };
-  sheet.appendRow([room, date, start, end, email, note || '']);
+  sheet.appendRow([room, date, start, end, email, String(note).trim()]);
   return { ok: true };
 }
 
