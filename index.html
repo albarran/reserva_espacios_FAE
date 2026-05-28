@@ -278,31 +278,37 @@ tr:last-child td { border-bottom: none; }
     <h1>FAE Rooms</h1>
     <p>Book offices and meeting rooms</p>
 
-    <p style="font-size:13px;color:var(--text-2);margin-bottom:6px;">Google account (<code>@gcloud.ua.es</code> · <code>@gmail.com</code>)</p>
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:6px;margin-top:1.5rem;">Google account (<code>@gcloud.ua.es</code> or <code>@gmail.com</code>)</p>
     <div id="google-btn-container" style="margin-bottom:8px;min-height:44px;"></div>
+    <div id="login-msg"></div>
 
+    <!-- ──────────────────────────────────────────────────────────
+         Password login disabled. Kept for future reactivation.
+         To re-enable: uncomment the block below.
+    ─────────────────────────────────────────────────────────── -->
+    <!--
     <div style="display:flex;align-items:center;gap:10px;margin:1.25rem 0;color:var(--text-3);font-size:12px;">
       <div style="flex:1;height:1px;background:var(--border);"></div>
       <span>or</span>
       <div style="flex:1;height:1px;background:var(--border);"></div>
     </div>
-
     <p style="font-size:13px;color:var(--text-2);margin-bottom:8px;">Email + password (<code>@ua.es</code> and others)</p>
     <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@ua.es" onkeydown="if(event.key==='Enter')doLogin()" /></div>
     <div class="form-group"><label>Password</label><input type="password" id="login-pass" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()" /></div>
-    <div id="login-msg"></div>
     <button class="primary" style="width:100%;margin-top:12px;" id="login-btn" onclick="doLogin()">Sign in</button>
     <p style="text-align:center;margin-top:1rem;font-size:13px;color:var(--text-2);">First time with password? <span class="link" onclick="showScreen('screen-register')">Create account</span></p>
+    -->
   </div>
 </div>
 
-<!-- REGISTER -->
+<!-- REGISTER (disabled together with password login).
+     To re-enable: uncomment this block.
 <div id="screen-register" class="screen">
   <div class="login-wrap">
     <h1>Create account</h1>
     <p style="margin-bottom:0.5rem;">For <code>@ua.es</code> only. If you have <code>@gcloud.ua.es</code> or <code>@gmail.com</code> → go back and use "Continue with Google".</p>
     <div class="msg" style="background:var(--warn-bg);color:var(--warn);margin-bottom:1rem;font-size:13px;">
-      ⚠️ The password you choose must be <strong>DIFFERENT</strong> from your UACloud password (campus virtual). This is an independent system.
+      ⚠️ The password you choose must be DIFFERENT from your UACloud password (campus virtual). This is an independent system.
     </div>
     <div class="form-group"><label>Full name</label><input type="text" id="reg-name" placeholder="e.g. Pedro Albarrán" /></div>
     <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="you@ua.es" /></div>
@@ -312,6 +318,8 @@ tr:last-child td { border-bottom: none; }
     <p style="text-align:center;margin-top:1rem;font-size:13px;"><span class="link" onclick="showScreen('screen-login')">← Back</span></p>
   </div>
 </div>
+-->
+<div id="screen-register" class="screen"></div>
 
 <!-- OVERVIEW -->
 <div id="screen-overview" class="screen">
