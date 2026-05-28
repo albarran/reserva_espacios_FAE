@@ -40,8 +40,8 @@ const ROOMS = [
     id: "r3",
     name: "Germán Bernacer 067",
     code: "0036PS067",
-    desc: "Pleasant for meetings or video calls. Primary for Oct/Nov seminars.",
-    note: "For October/November speakers.",
+    desc: "Very pleasant for meetings or online calls. Use for the Oct 14 and Nov 17 speakers (since CS066 will be unavailable in those months because José Antonio will be using it).",
+    note: "Primary for Oct/Nov speakers.",
     color: "var(--r3)",
     bg: "var(--r3-bg)",
     light: "var(--r3-light)",
@@ -58,7 +58,14 @@ const ROOMS = [
   },
 ];
 
-// Seminarios bloqueados (slots no reservables).
+// Bloqueos por rango de fechas (días enteros). Se expanden a un slot
+// diario "todo el día" no reservable. Útil para estancias largas.
+const BLOCKS = [
+  { room: 'r1', dateStart: '2026-10-14', dateEnd: '2026-11-17',
+    start: '08:00', end: '22:00', note: 'José Antonio Espín' },
+];
+
+// Seminarios bloqueados (slots concretos no reservables).
 const SEMINARS = [
   {
     room: "r1",
