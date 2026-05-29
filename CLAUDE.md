@@ -11,7 +11,9 @@ Desarrollado inicialmente con Claude en claude.ai, continuable con Claude Code C
 - **Frontend**: HTML/CSS/JS puro. Un único fichero `index.html`. Sin frameworks, sin build step.
 - **Backend**: Google Apps Script desplegado como Web App (API REST).
 - **Base de datos**: Google Sheets (3 pestañas: `users`, `bookings`, `allowlist`).
-- **Hosting**: GitHub Pages (`https://albarran.github.io/FAE_Room_Booking/`).
+- **Hosting**: GitHub Pages, dos espejos sirviendo el mismo código y mismo backend:
+  - `https://albarran.github.io/FAE_Room_Booking/` (cuenta `albarran`, origen)
+  - `https://dfae-ua.github.io/FAE_Room_Booking/` (cuenta `dfae-ua`, mirror)
 
 ### Ficheros del repo
 ```
@@ -257,7 +259,59 @@ cd ~/Github/FAE_Room_Booking
 git add .
 git commit -m "descripción del cambio"
 git push origin main
-# GitHub Pages actualiza en ~1 minuto
+# GitHub Pages actualiza en ~1 minuto (en ambos espejos)
+```
+
+---
+
+## Mirror dfae-ua + push doble
+
+El repo se publica simultáneamente en dos cuentas GitHub para que la URL
+visible sea `dfae-ua.github.io` (cuenta departamental) y siga existiendo
+`albarran.github.io` (cuenta personal del responsable).
+
+- Cuentas:
+  - `albarran` → repo `albarran/FAE_Room_Booking` → Pages `https://albarran.github.io/FAE_Room_Booking/`
+  - `dfae-ua` (email `pedro.albarran.ua@gmail.com`) → repo `dfae-ua/FAE_Room_Booking` → Pages `https://dfae-ua.github.io/FAE_Room_Booking/`
+- Backend único: ambos frontales llaman al mismo Apps Script (`API` en `config.js`).
+- OAuth: el Client ID tiene como Authorized JavaScript origins
+  `https://albarran.github.io` **y** `https://dfae-ua.github.io`.
+
+### Cómo se configura el push doble
+
+`gh auth status` debe listar las dos cuentas autenticadas (`albarran` por
+SSH, `dfae-ua` por HTTPS+token — la misma SSH key no se puede registrar en
+dos cuentas, por eso `dfae-ua` va por HTTPS con el helper de `gh`).
+
+```bash
+gh auth setup-git --hostname github.com   # registra gh como credential helper
+```
+
+El remote `origin` apunta a `albarran` para `fetch`, y a **ambos** repos
+para `push` gracias a `pushurl` múltiple en `.git/config`:
+
+```bash
+git remote set-url --add --push origin git@github.com:albarran/FAE_Room_Booking.git
+git remote set-url --add --push origin https://github.com/dfae-ua/FAE_Room_Booking.git
+```
+
+Tras esto, `git push origin main` actualiza los dos repos a la vez.
+
+### Reproducir el setup en otra máquina (p.ej. `hpfae19`)
+
+⚠️ La configuración de remotes vive en `.git/config` y **no se clona**.
+Hay que repetir el setup en cada máquina:
+
+```bash
+gh auth login --hostname github.com --git-protocol ssh --web    # cuenta albarran (SSH ya añadida)
+gh auth login --hostname github.com --git-protocol https --web  # cuenta dfae-ua (HTTPS+token)
+gh auth setup-git --hostname github.com
+cd ~/Github
+git clone git@github.com:albarran/FAE_Room_Booking.git
+cd FAE_Room_Booking
+git remote set-url --add --push origin git@github.com:albarran/FAE_Room_Booking.git
+git remote set-url --add --push origin https://github.com/dfae-ua/FAE_Room_Booking.git
+git remote -v   # verifica los dos pushurl
 ```
 
 ## Cómo continuar con Claude Code
